@@ -165,6 +165,6 @@ export const getMarginalPriceSwapStableIn = (
  * @param x A number
  * @returns is x greater than or equal to 0?
  */
-const nonNegative = (x: number): boolean => {
+export const nonNegative = (x: number): boolean => {
   return x >= 0
 }

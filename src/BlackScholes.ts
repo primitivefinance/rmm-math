@@ -29,7 +29,7 @@ export function getProportionalVol(sigma: number, tau: number): number {
  * @returns (Log(spot / strike) + sigma^2 / 2 * tau) / (sigma * sqrt(tau))
  */
 export function calculateD1(strike: number, sigma: number, tau: number, spot: number, rate: number = 0): number {
-  if (tau < 0) return 0
+  if (tau <= 0) return 0
   return (moneyness(spot, strike) + (rate + Math.pow(sigma, 2) / 2) * tau) / getProportionalVol(sigma, tau)
 }
 
