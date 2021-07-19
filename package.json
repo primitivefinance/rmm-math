@@ -37,7 +37,7 @@
     }
   },
   "prettier": {
-    "printWidth": 80,
+    "printWidth": 120,
     "semi": false,
     "singleQuote": true,
     "trailingComma": "es5"
@@ -64,5 +64,9 @@
     "typescript": "^4.3.5"
   },
   "publishConfig": {},
-  "private": "true"
+  "private": "true",
+  "dependencies": {
+    "gaussian": "^1.2.0",
+    "numeric": "^1.2.6"
+  }
 }
