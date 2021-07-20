@@ -63,6 +63,9 @@
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "dependencies": {
     "gaussian": "^1.2.0",
     "numeric": "^1.2.6"
