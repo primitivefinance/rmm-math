@@ -68,5 +68,10 @@
   "dependencies": {
     "gaussian": "^1.2.0",
     "numeric": "^1.2.6"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
   }
 }
