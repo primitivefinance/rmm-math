@@ -1,6 +1,7 @@
 {
   "name": "@primitivefinance/v2-math",
-  "author": "https://primitive.finance",
+  "author": "Primitive",
+  "homepage": "https://primitive.finance",
   "version": "1.2.0",
   "keywords": [
     "primitive",
