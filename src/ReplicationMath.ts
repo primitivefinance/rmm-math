@@ -94,7 +94,9 @@ export function getSpotPrice(
   sigma: number,
   tau: number
 ): number {
-  return getTradingFunction(0, reserveRisky, liquidity, strike, sigma, tau) * quantilePrime(1 - reserveRisky)
+  return (
+    getTradingFunction(0, reserveRisky, liquidity, strike, sigma, tau) * quantilePrime(1 - reserveRisky / liquidity)
+  )
 }
 
 /**
