@@ -36,8 +36,12 @@ describe('Replication math', () => {
   })
 
   describe('calculate spot price', () => {
-    it('moneyness', () => {
-      expect(2).toEqual(2)
+    it('shouldnt be nan', () => {
+      expect(math.getSpotPrice(1, 2, 1, 1, 1) > 0).toBe(!NaN)
+    })
+
+    it('should be nan if reserveRisky is greater than 1', () => {
+      expect(math.getSpotPrice(3, 2, 1, 1, 1)).toBe(NaN)
     })
   })
 

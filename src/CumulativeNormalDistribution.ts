@@ -32,6 +32,7 @@ export const inverse_std_n_cdf = x => {
  * @returns CDF(CDF(x)^-1)^-1
  */
 export const quantilePrime = x => {
+  if (x > 1 || x < 0) return NaN
   return gaussian(0, 1).pdf(inverse_std_n_cdf(x)) ** -1
 }
 
