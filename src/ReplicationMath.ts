@@ -3,27 +3,24 @@ import { getProportionalVol } from './BlackScholes'
 
 /**
  * @notice Core math trading function of the AMM to calculate the stable reserve using risky
- * @param invariantLast Previous invariant with the same `tau` input as the parameter `tau`
- * @param reserveRisky Pool's reserve of risky tokens
- * @param liquidity Pool total supply of liquidity (units of replication)
+ * @param reserveRisky Pool's reserve of risky tokens per unit of liquidity
  * @param strike Price point that defines complete stable token composition of the pool
  * @param sigma Implied volatility of the pool
  * @param tau Time until expiry
+ * @param invariantLast Previous invariant with the same `tau` input as the parameter `tau`
  * @returns Covered Call AMM black-scholes trading function
  */
-export function getTradingFunction(
-  invariantLast: number = 0,
+export function getStableGivenRisky(
   reserveRisky: number,
-  liquidity: number,
   strike: number,
   sigma: number,
-  tau: number
+  tau: number,
+  invariantLast: number = 0
 ): number {
   const K = strike
   const vol = getProportionalVol(sigma, tau)
   if (vol <= 0) return 0
-  const reserve: number = reserveRisky / liquidity
-  const inverseInput: number = 1 - +reserve
+  const inverseInput: number = 1 - reserveRisky
   const phi: number = inverse_std_n_cdf(inverseInput)
   const input = phi - vol
   const reserveStable = K * std_n_cdf(input) + invariantLast
@@ -32,27 +29,24 @@ export function getTradingFunction(
 
 /**
  * @notice Core math trading function of the AMM to calculate the risky reserve using stable
- * @param invariantLast Previous invariant with the same `tau` input as the parameter `tau`
- * @param reserveStable Pool's reserve of stable tokens
- * @param liquidity Pool total supply of liquidity (units of replication)
+ * @param reserveStable Pool's reserve of stable tokens per unit of liquidity
  * @param strike Price point that defines complete stable token composition of the pool
  * @param sigma Implied volatility of the pool
  * @param tau Time until expiry
+ * @param invariantLast Previous invariant with the same `tau` input as the parameter `tau`
  * @returns Covered Call AMM black-scholes inverse trading function
  */
-export function getInverseTradingFunction(
-  invariantLast: number = 0,
+export function getRiskyGivenStable(
   reserveStable: number,
-  liquidity: number,
   strike: number,
   sigma: number,
-  tau: number
+  tau: number,
+  invariantLast: number = 0
 ): number {
   const K = strike
   const vol = getProportionalVol(sigma, tau)
   if (vol <= 0) return 0
-  const reserve: number = reserveStable / liquidity
-  const inverseInput: number = (reserve - invariantLast) / K
+  const inverseInput: number = (reserveStable - invariantLast) / K
   const phi: number = inverse_std_n_cdf(inverseInput)
   const input = phi + vol
   const reserveRisky = 1 - std_n_cdf(input)
@@ -62,48 +56,36 @@ export function getInverseTradingFunction(
 /**
  * @param reserveRisky Pool's reserve of risky tokens
  * @param reserveStable Pool's reserve of stable tokens
- * @param liquidity Pool total supply of liquidity (units of replication)
  * @param strike Price point that defines complete stable token composition of the pool
  * @param sigma Implied volatility of the pool
  * @param tau Time until expiry
- * @returns Invariant = Reserve stable - getTradingFunction(...)
+ * @returns Invariant = Reserve stable - getStableGivenRisky(...)
  */
 export function calcInvariant(
   reserveRisky: number,
   reserveStable: number,
-  liquidity: number,
   strike: number,
   sigma: number,
   tau: number
 ): number {
-  return reserveStable - getTradingFunction(0, reserveRisky, liquidity, strike, sigma, tau)
+  return reserveStable - getStableGivenRisky(reserveRisky, strike, sigma, tau)
 }
 
 /**
  * @param reserveRisky Pool's reserve of risky tokens
- * @param liquidity Pool total supply of liquidity (units of replication)
  * @param strike Price point that defines complete stable token composition of the pool
  * @param sigma Implied volatility of the pool
  * @param tau Time until expiry
- * @returns getTradingFunction(...) * pdf(ppf(1 - risky))^-1
+ * @returns getStableGivenRisky(...) * pdf(ppf(1 - risky))^-1
  */
-export function getSpotPrice(
-  reserveRisky: number,
-  liquidity: number,
-  strike: number,
-  sigma: number,
-  tau: number
-): number {
-  return (
-    getTradingFunction(0, reserveRisky, liquidity, strike, sigma, tau) * quantilePrime(1 - reserveRisky / liquidity)
-  )
+export function getSpotPrice(reserveRisky: number, strike: number, sigma: number, tau: number): number {
+  return getStableGivenRisky(reserveRisky, strike, sigma, tau) * quantilePrime(1 - reserveRisky)
 }
 
 /**
  * @notice See https://arxiv.org/pdf/2012.08040.pdf
  * @param amountIn Amount of risky token to add to risky reserve
  * @param reserveRisky Pool's reserve of risky tokens
- * @param liquidity Pool total supply of liquidity (units of replication)
  * @param strike Price point that defines complete stable token composition of the pool
  * @param sigma Implied volatility of the pool
  * @param tau Time until expiry, in years
@@ -112,7 +94,6 @@ export function getSpotPrice(
 export const getMarginalPriceSwapRiskyIn = (
   amountIn: number,
   reserveRisky: number,
-  liquidity: number,
   strike: number,
   sigma: number,
   tau: number,
@@ -120,8 +101,7 @@ export const getMarginalPriceSwapRiskyIn = (
 ) => {
   if (!nonNegative(amountIn)) return 0
   const gamma = 1 - fee
-  const risky = reserveRisky / liquidity
-  const step0 = 1 - risky - gamma * amountIn
+  const step0 = 1 - reserveRisky - gamma * amountIn
   const step1 = sigma * Math.sqrt(tau)
   const step2 = quantilePrime(step0)
   const step3 = gamma * strike
@@ -134,7 +114,6 @@ export const getMarginalPriceSwapRiskyIn = (
  * @notice See https://arxiv.org/pdf/2012.08040.pdf
  * @param amountIn Amount of stable token to add to stable reserve
  * @param reserveStable Pool's reserve of stable tokens
- * @param liquidity Pool total supply of liquidity (units of replication)
  * @param strike Price point that defines complete stable token composition of the pool
  * @param sigma Implied volatility of the pool
  * @param tau Time until expiry, in years
@@ -144,7 +123,6 @@ export const getMarginalPriceSwapStableIn = (
   amountIn: number,
   invariant: number,
   reserveStable: number,
-  liquidity: number,
   strike: number,
   sigma: number,
   tau: number,
@@ -152,8 +130,7 @@ export const getMarginalPriceSwapStableIn = (
 ) => {
   if (!nonNegative(amountIn)) return 0
   const gamma = 1 - fee
-  const stable = reserveStable / liquidity
-  const step0 = (stable + gamma * amountIn - invariant) / strike
+  const step0 = (reserveStable + gamma * amountIn - invariant) / strike
   const step1 = sigma * Math.sqrt(tau)
   const step3 = inverse_std_n_cdf(step0)
   const step4 = std_n_pdf(step3 + step1)
