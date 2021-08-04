@@ -25,6 +25,15 @@ describe('Stats Math Library', () => {
       const x = 1.5
       expect(math.quantilePrime(x)).toEqual(NaN)
     })
+
+    it('return a number for in bounds number', () => {
+      const x = 1
+      expect(math.quantilePrime(x) > 0).toEqual(!NaN)
+    })
+    it('return a number for in bounds number', () => {
+      const x = 0
+      expect(math.quantilePrime(x) > 0).toEqual(!NaN)
+    })
   })
 
   describe('solidityNormalCDF', () => {

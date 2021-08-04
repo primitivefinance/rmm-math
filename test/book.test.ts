@@ -22,7 +22,6 @@ describe('Book', () => {
       const premiums = poolKeys.map(key => {
         const iv = +pools[strike][key].iv / 100
         const premium = math.callPremium(strike, iv, tau, spot)
-        console.log({ strike, iv, tau, spot, premium })
         return premium
       })
 
@@ -54,9 +53,8 @@ describe('Book', () => {
         return costs.reduce((a, b) => a + b) / totalSize
       }
 
-      const avg = calcAvgPrice(costs, totalSize)
-
-      console.log({ avg, costs, premiums })
+      calcAvgPrice(costs, totalSize)
+      //console.log({ avg, costs, premiums })
     })
   })
 })

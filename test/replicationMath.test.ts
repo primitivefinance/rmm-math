@@ -1,13 +1,13 @@
 import * as math from '../src/ReplicationMath'
 
 describe('Replication math', () => {
-  describe('trading function', () => {
+  describe('getStableGivenRisky', () => {
     it('return 0 if strike price and invariant is 0', () => {
       expect(math.getStableGivenRisky(0.5, 0, 1, 1)).toEqual(0)
     })
 
     it('return 0 if risky reserve is 1', () => {
-      expect(math.getStableGivenRisky(1, 1, 1, 1, 1)).toEqual(0)
+      expect(math.getStableGivenRisky(1, 1, 1, 1)).toEqual(0)
     })
 
     it('return K if risky reserve is 0', () => {
@@ -21,7 +21,7 @@ describe('Replication math', () => {
     })
   })
 
-  describe('inverse trading function', () => {
+  describe('getRiskyGivenStable', () => {
     it('return 0 if strike price is 0', () => {
       expect(2).toEqual(2)
     })
@@ -37,7 +37,11 @@ describe('Replication math', () => {
 
   describe('calculate spot price', () => {
     it('shouldnt be nan', () => {
-      expect(math.getSpotPrice(1, 2, 1, 1) > 0).toBe(!NaN)
+      expect(math.getSpotPrice(0.999, 1, 1, 1) > 0).toBe(!NaN)
+    })
+
+    it('should be nan if 1 - reserveRisky is 0 or less', () => {
+      expect(math.getSpotPrice(1, 1, 1, 1)).toBe(NaN)
     })
 
     it('should be nan if reserveRisky is greater than 1', () => {
