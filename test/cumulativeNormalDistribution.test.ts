@@ -14,14 +14,25 @@ describe('Stats Math Library', () => {
   })
 
   describe('inverse standard normal cdf (quantile)', () => {
-    it('moneyness', () => {
-      expect(2).toEqual(2)
-    })
+    /* it('return nan for out of bounds value: x > 1', () => {
+      const x = 1.5
+      expect(math.inverse_std_n_cdf(x)).toEqual(NaN)
+    }) */
   })
 
   describe('quantilePrime', () => {
-    it('moneyness', () => {
-      expect(2).toEqual(2)
+    it('return nan for out of bounds value: x > 1', () => {
+      const x = 1.5
+      expect(math.quantilePrime(x)).toEqual(NaN)
+    })
+
+    it('return a number for in bounds number', () => {
+      const x = 1
+      expect(math.quantilePrime(x) > 0).toEqual(!NaN)
+    })
+    it('return a number for in bounds number', () => {
+      const x = 0
+      expect(math.quantilePrime(x) > 0).toEqual(!NaN)
     })
   })
 

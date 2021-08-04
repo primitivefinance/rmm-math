@@ -30,7 +30,7 @@ export function getProportionalVol(sigma: number, tau: number): number {
  */
 export function calculateD1(strike: number, sigma: number, tau: number, spot: number, rate: number = 0): number {
   if (tau <= 0) return 0
-  return (moneyness(spot, strike) + (rate + Math.pow(sigma, 2) / 2) * tau) / getProportionalVol(sigma, tau)
+  return (moneyness(strike, spot) + (rate + Math.pow(sigma, 2) / 2) * tau) / getProportionalVol(sigma, tau)
 }
 
 /**
@@ -71,5 +71,5 @@ export function callDelta(strike: number, sigma: number, tau: number, spot: numb
 export function callPremium(strike: number, sigma: number, tau: number, spot: number, rate: number = 0): number {
   const d1 = calculateD1(strike, sigma, tau, spot, rate)
   const d2 = d1 - getProportionalVol(sigma, tau)
-  return std_n_cdf(d1) * spot - std_n_cdf(d2) * strike * Math.exp(-tau * rate)
+  return Math.max(0, std_n_cdf(d1) * spot - std_n_cdf(d2) * strike * Math.exp(-tau * rate))
 }
