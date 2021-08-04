@@ -48,14 +48,14 @@
   "size-limit": [
     {
       "path": "dist/src.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "20 KB"
     },
     {
       "path": "dist/src.esm.js",
-      "limit": "10 KB"
+      "limit": "20 KB"
     }
   ],
-  "peerDependencies": {},  
+  "peerDependencies": {},
   "devDependencies": {
     "@size-limit/preset-small-lib": "^5.0.1",
     "husky": "^7.0.1",
