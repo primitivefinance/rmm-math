@@ -5,6 +5,10 @@ describe('Black Scholes', () => {
     it('return 0 if spot and strike are equal', () => {
       expect(math.moneyness(10, 10)).toEqual(0)
     })
+
+    it('return -0.233 if spot and strike are equal', () => {
+      expect(math.moneyness(2500, 2000)).toBeCloseTo(-0.223)
+    })
   })
 
   describe('getProportionalVol', () => {
