@@ -1,4 +1,6 @@
 import * as math from '../src/ReplicationMath'
+import { EPSILON, MAX_PRECISION } from '../src/utils'
+import { maxError } from './cumulativeNormalDistribution.test'
 
 describe('Replication math', () => {
   describe('getStableGivenRisky', () => {
@@ -69,5 +71,46 @@ describe('Replication math', () => {
     it('should return false for a negative value', () => {
       expect(math.nonNegative(-1)).toEqual(false)
     })
+  })
+
+  // desmos used https://www.desmos.com/calculator/ztctiscqqe
+  describe('solidity approximations', () => {
+    const R1 = 0.308537538726
+    const R2 = 3.08537538726
+    const strike = 10
+    const sigma = 1
+    const tau = 1
+
+    it('getRiskyGivenStableApproximation using desmos as reference', () => {
+      expect(math.getRiskyGivenStableApproximation(R2, strike, sigma, tau)).toBeCloseTo(R1, maxError.cdf)
+    })
+
+    it('getStableGivenRiskyApproximation using desmos as reference', () => {
+      expect(math.getStableGivenRiskyApproximation(R1, strike, sigma, tau)).toBeCloseTo(R2, maxError.cdf)
+    })
+
+    it('getStableGivenRiskyApproximation at risky reserve = 1 - MAX_PRECISION', () => {
+      expect(math.getStableGivenRiskyApproximation(1 - MAX_PRECISION, strike, sigma, tau)).toBeCloseTo(0, maxError.cdf)
+    })
+
+    it('getStableGivenRiskyApproximation at risky reserve = MAX_PRECISION', () => {
+      expect(math.getStableGivenRiskyApproximation(MAX_PRECISION, strike, sigma, tau)).toBeCloseTo(strike, maxError.cdf)
+    })
+
+    it('getRiskyGivenStableApproximation at stable reserve = strike - EPSILON', () => {
+      expect(math.getRiskyGivenStableApproximation(strike - EPSILON, strike, sigma, tau)).toBeCloseTo(0, maxError.cdf)
+    })
+
+    it('getRiskyGivenStableApproximation at stable reserve = MAX_PRECISION', () => {
+      expect(math.getRiskyGivenStableApproximation(MAX_PRECISION, strike, sigma, tau)).toBeCloseTo(1, maxError.cdf)
+    })
+
+    it('getInvariantApproximation', () => {
+      expect(math.getInvariantApproximation(R1, R2, strike, sigma, tau)).toBeCloseTo(0, maxError.cdf)
+    })
+  })
+
+  it('should return false for a negative value', () => {
+    expect(math.nonNegative(-1)).toEqual(false)
   })
 })

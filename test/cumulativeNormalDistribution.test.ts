@@ -36,15 +36,41 @@ describe('Stats Math Library', () => {
     })
   })
 
-  describe('solidityNormalCDF', () => {
-    it('moneyness', () => {
-      expect(2).toEqual(2)
+  describe('solidity cdf', () => {
+    it('cdf of 0', () => {
+      expect(math.getCDFSolidity(0)).toBeCloseTo(0.5, maxError.cdf)
+    })
+
+    it('cdf of -1', () => {
+      expect(math.getCDFSolidity(-1)).toBeCloseTo(0.1586552539314570514148, maxError.cdf)
+    })
+
+    it('cdf of 1', () => {
+      expect(math.getCDFSolidity(1)).toBeCloseTo(0.8413447460685429485852, maxError.cdf)
     })
   })
 
-  describe('solidityInverseCDF', () => {
-    it('moneyness', () => {
-      expect(2).toEqual(2)
+  describe('solidity inverse cdf', () => {
+    it('inverseCDF of 0.5', () => {
+      expect(math.getInverseCDFSolidity(0.5)).toBeCloseTo(0, maxError.centralInverseCDF)
+    })
+
+    it('inverseCDF of 0.7', () => {
+      expect(math.getInverseCDFSolidity(0.7)).toBeCloseTo(0.5244005127080407840383, maxError.centralInverseCDF)
+    })
+
+    it('inverseCDF high tail', () => {
+      expect(math.getInverseCDFSolidity(0.98)).toBeCloseTo(2.053748910631823052937, maxError.tailInverseCDF)
+    })
+
+    it('inverseCDF low tail', () => {
+      expect(math.getInverseCDFSolidity(0.01)).toBeCloseTo(-2.32634787404084110089, maxError.tailInverseCDF)
     })
   })
 })
+
+export const maxError = {
+  cdf: 3.15e-3,
+  centralInverseCDF: 1.16e-4,
+  tailInverseCDF: 2.458e-5,
+}

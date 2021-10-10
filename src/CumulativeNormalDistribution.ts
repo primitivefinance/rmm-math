@@ -126,9 +126,9 @@ export function centralInverseCDFSolidity(p) {
  */
 export function tailInverseCDFSolidity(p) {
   const r = Math.sqrt(Math.log(1 / Math.pow(p, 2)))
-  const c0 = 16.896201479841517652
+  /* const c0 = 16.896201479841517652
   const c1 = -2.793522347562718412
-  const c2 = -8.731478129786263127
+  const c2 = -8.731478129786263127 */
   const c3 = -1.000182518730158122
   const c0_D = 16.682320830719986527
   const c1_D = 4.120411523939115059
@@ -140,11 +140,5 @@ export function tailInverseCDFSolidity(p) {
   const denominator = Math.pow(r, 2) + D1 * r + D0
   const quotient = numerator / denominator
   const result = c3 * r + c2_D + quotient
-
-  const secondary = (c3 * Math.pow(r, 3) + c2 * Math.pow(r, 2) + c1 * r + c0) / Math.pow(r, 2) + D1 * r + D0
-  if (result !== secondary) {
-    console.log(`Result ${result} does not match secondary ${secondary}`)
-    return result
-  }
   return result
 }
