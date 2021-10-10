@@ -48,9 +48,10 @@ export function getRiskyGivenStableApproximation(
   reserveStable: number,
   strike: number,
   sigma: number,
-  tau: number
+  tau: number,
+  invariantLast = 0
 ): number {
-  const func = reserveRisky => getInvariantApproximation(reserveRisky, reserveStable, strike, sigma, tau)
+  const func = reserveRisky => getInvariantApproximation(reserveRisky, reserveStable, strike, sigma, tau, invariantLast)
 
   const MAX_RISKY = 1
   let optimalDeltaOut: number
@@ -76,9 +77,10 @@ export function getInvariantApproximation(
   reserveStable: number,
   strike: number,
   sigma: number,
-  tau: number
+  tau: number,
+  invariantLast = 0
 ): number {
-  return reserveStable - getStableGivenRiskyApproximation(reserveRisky, strike, sigma, tau)
+  return reserveStable - getStableGivenRiskyApproximation(reserveRisky, strike, sigma, tau, invariantLast)
 }
 
 // ===== Precise math =====
