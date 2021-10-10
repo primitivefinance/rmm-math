@@ -54,7 +54,7 @@ export function getRiskyGivenStableApproximation(
 
   const MAX_RISKY = 1
   let optimalDeltaOut: number
-  if (Math.sign(func(MAX_PRECISION)) != Math.sign(func(MAX_RISKY - MAX_PRECISION))) {
+  if (Math.sign(func(MAX_PRECISION)) !== Math.sign(func(MAX_RISKY - MAX_PRECISION))) {
     optimalDeltaOut = bisection(func, MAX_PRECISION, MAX_RISKY - MAX_PRECISION)
   } else {
     optimalDeltaOut = MAX_RISKY

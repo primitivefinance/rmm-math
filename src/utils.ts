@@ -11,7 +11,7 @@ export const MAX_PRECISION = 1e-6
  */
 export function bisection(func, a, b) {
   if (func(a) * func(b) >= 0) {
-    console.log('\n You have not assumed' + ' right a and b')
+    console.log('\n You have not assumed right a and b')
     return
   }
 
@@ -21,7 +21,7 @@ export function bisection(func, a, b) {
     c = (a + b) / 2
 
     // Check if middle point is root
-    if (func(c) == 0.0) break
+    if (func(c) === 0.0) break
     // Decide the side to repeat the steps
     else if (func(c) * func(a) < 0) b = c
     else a = c
