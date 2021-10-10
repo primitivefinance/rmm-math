@@ -1,6 +1,16 @@
 import { inverse_std_n_cdf, std_n_cdf, std_n_pdf, quantilePrime } from './CumulativeNormalDistribution'
 import { getProportionalVol } from './BlackScholes'
 
+// ===== Approximations as in the Solidity implementation =====
+
+export function getStableGivenRiskyApproximation() {}
+
+export function getRiskyGivenStableApproximation() {}
+
+export function getInvariantApproximation() {}
+
+// ===== Precise math =====
+
 /**
  * @notice Core math trading function of the AMM to calculate the stable reserve using risky
  * @param reserveRisky Pool's reserve of risky tokens per unit of liquidity
