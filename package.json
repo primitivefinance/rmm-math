@@ -1,20 +1,21 @@
 {
-  "name": "@primitivefinance/v2-math",
+  "name": "@primitivefinance/rmm-math",
   "author": "Primitive",
   "homepage": "https://primitive.finance",
   "version": "1.2.0",
   "keywords": [
-    "primitive",
-    "v2",
+    "amm",
+    "rmm",
+    "black-scholes",
     "ethereum",
     "math",
-    "black-scholes"
+    "primitive"
   ],
   "license": "GPL-3.0-or-later",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/primitivefinance/primitive-v2-math.git"
+    "url": "https://github.com/primitivefinance/rmm-math.git"
   },
   "files": [
     "dist",

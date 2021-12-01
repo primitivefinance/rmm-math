@@ -24,6 +24,8 @@ export function std_n_pdf(x) {
  * @returns CDF^-1 of x
  */
 export function inverse_std_n_cdf(x) {
+  if (x >= 1) return Infinity
+  if (x <= 0) return -Infinity
   return gaussian(0, 1).ppf(x)
 }
 
@@ -32,7 +34,6 @@ export function inverse_std_n_cdf(x) {
  * @returns CDF(CDF(x)^-1)^-1
  */
 export function quantilePrime(x) {
-  if (x > 1 || x < 0) return NaN
   return gaussian(0, 1).pdf(inverse_std_n_cdf(x)) ** -1
 }
 
@@ -89,7 +90,7 @@ export const LOW_TAIL = 0.025
  * @returns standard normal invervse cumulative distribution (quantile) function of x
  */
 export function getInverseCDFSolidity(p) {
-  if (p >= 1 || p <= 0) return NaN
+  if (p >= 1 || p <= 0) return Infinity
   if (p <= HIGH_TAIL && p >= LOW_TAIL) {
     return centralInverseCDFSolidity(p)
   } else if (p < LOW_TAIL) {
@@ -126,9 +127,6 @@ export function centralInverseCDFSolidity(p) {
  */
 export function tailInverseCDFSolidity(p) {
   const r = Math.sqrt(Math.log(1 / Math.pow(p, 2)))
-  /* const c0 = 16.896201479841517652
-  const c1 = -2.793522347562718412
-  const c2 = -8.731478129786263127 */
   const c3 = -1.000182518730158122
   const c0_D = 16.682320830719986527
   const c1_D = 4.120411523939115059
