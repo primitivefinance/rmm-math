@@ -9,29 +9,40 @@ describe('Stats Math Library', () => {
 
   describe('standard normal probability density function', () => {
     it('moneyness', () => {
-      expect(2).toEqual(2)
+      const x = 0.5
+      expect(math.std_n_pdf(x)).toEqual(0.3520653267642995)
     })
   })
 
   describe('inverse standard normal cdf (quantile)', () => {
-    /* it('return nan for out of bounds value: x > 1', () => {
-      const x = 1.5
-      expect(math.inverse_std_n_cdf(x)).toEqual(NaN)
-    }) */
+    it('return infinity for out of bounds value: x >= 1', () => {
+      const x = 1
+      expect(math.inverse_std_n_cdf(x)).toEqual(Infinity)
+    })
+
+    it('return -infinity for out of bounds value: x <= 0', () => {
+      const x = 0
+      expect(math.inverse_std_n_cdf(x)).toEqual(-Infinity)
+    })
   })
 
   describe('quantilePrime', () => {
-    it('return nan for out of bounds value: x > 1', () => {
-      const x = 1.5
-      expect(math.quantilePrime(x)).toEqual(NaN)
+    it('return infinity for out of bounds value: x >= 1', () => {
+      const x = 1
+      expect(math.quantilePrime(x)).toEqual(Infinity)
+    })
+
+    it('return infinity for out of bounds value: x <= 0', () => {
+      const x = 0
+      expect(math.quantilePrime(x)).toEqual(Infinity)
     })
 
     it('return a number for in bounds number', () => {
-      const x = 1
+      const x = 0.5
       expect(math.quantilePrime(x) > 0).toEqual(!NaN)
     })
     it('return a number for in bounds number', () => {
-      const x = 0
+      const x = 0.5
       expect(math.quantilePrime(x) > 0).toEqual(!NaN)
     })
   })

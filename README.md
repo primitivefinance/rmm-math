@@ -1,5 +1,5 @@
-# primitive-v2-math
+# RMM-Math
 
-Math library for RMM-01
+Math library for RMM-01.
 
 Includes typescript functions for solidity approximations.

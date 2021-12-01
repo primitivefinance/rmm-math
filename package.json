@@ -1,20 +1,21 @@
 {
-  "name": "@primitivefinance/v2-math",
+  "name": "@primitivefinance/rmm-math",
   "author": "Primitive",
   "homepage": "https://primitive.finance",
   "version": "1.2.0",
   "keywords": [
-    "primitive",
-    "v2",
+    "amm",
+    "rmm",
+    "black-scholes",
     "ethereum",
     "math",
-    "black-scholes"
+    "primitive"
   ],
   "license": "GPL-3.0-or-later",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/primitivefinance/primitive-v2-math.git"
+    "url": "https://github.com/primitivefinance/rmm-math.git"
   },
   "files": [
     "dist",
@@ -30,9 +31,7 @@
     "build": "tsdx build",
     "test": "tsdx test",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
-    "size": "size-limit",
-    "analyze": "size-limit --why"
+    "prepare": "tsdx build"
   },
   "husky": {
     "hooks": {
@@ -45,21 +44,9 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "size-limit": [
-    {
-      "path": "dist/src.cjs.production.min.js",
-      "limit": "20 KB"
-    },
-    {
-      "path": "dist/src.esm.js",
-      "limit": "20 KB"
-    }
-  ],
   "peerDependencies": {},
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^5.0.1",
     "husky": "^7.0.1",
-    "size-limit": "^5.0.1",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"
