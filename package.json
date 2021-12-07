@@ -1,5 +1,5 @@
 {
-  "name": "@primitivefinance/rmm-math",
+  "name": "@primitivefi/rmm-math",
   "author": "Primitive",
   "homepage": "https://primitive.finance",
   "version": "2.0.0-beta.1",
@@ -54,9 +54,6 @@
   "dependencies": {
     "gaussian": "^1.2.0",
     "numeric": "^1.2.6"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   },
   "release": {
     "branches": [
