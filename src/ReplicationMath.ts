@@ -230,14 +230,14 @@ export function getMarginalPriceSwapStableIn(
   const step1 = sigma * Math.sqrt(tau)
   const step3 = inverse_std_n_cdf(step0)
   const step4 = std_n_pdf(step3 + step1)
-  const step5 = step0 * (1 / strike)
-  const step6 = quantilePrime(step5)
+  const step6 = quantilePrime(step0) * (1 / strike)
   const step7 = gamma * step4 * step6
   return 1 / step7
 }
 
 /**
  * @notice See https://arxiv.org/pdf/2012.08040.pdf
+ * @dev Uses same approximations used in solidity contracts
  * @param amountIn Amount of risky token to add to risky reserve
  * @param reserveRisky Pool's reserve of risky tokens
  * @param strike Price point that defines complete stable token composition of the pool
@@ -266,6 +266,7 @@ export function getMarginalPriceSwapRiskyInApproximation(
 
 /**
  * @notice See https://arxiv.org/pdf/2012.08040.pdf
+ * @dev Uses same approximations used in solidity contracts
  * @param amountIn Amount of stable token to add to stable reserve
  * @param reserveStable Pool's reserve of stable tokens
  * @param strike Price point that defines complete stable token composition of the pool
@@ -288,8 +289,7 @@ export function getMarginalPriceSwapStableInApproximation(
   const step1 = sigma * Math.sqrt(tau)
   const step3 = getInverseCDFSolidity(step0)
   const step4 = std_n_pdf(step3 + step1)
-  const step5 = step0 * (1 / strike)
-  const step6 = quantilePrime(step5)
+  const step6 = quantilePrime(step0) * (1 / strike)
   const step7 = gamma * step4 * step6
   return 1 / step7
 }
