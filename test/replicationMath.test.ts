@@ -43,11 +43,11 @@ describe('Replication math', () => {
     })
 
     it('should be nan if 1 - reserveRisky is 0 or less', () => {
-      expect(math.getSpotPrice(1, 1, 1, 1)).toBe(NaN)
+      expect(math.getSpotPrice(1, 1, 1, 1)).toBe(0)
     })
 
     it('should be nan if reserveRisky is greater than 1', () => {
-      expect(math.getSpotPrice(3, 2, 1, 1)).toBe(NaN)
+      expect(math.getSpotPrice(3, 2, 1, 1)).toBe(0)
     })
   })
 
