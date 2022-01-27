@@ -17,9 +17,10 @@ describe('Replication math', () => {
       expect(math.getStableGivenRisky(0, 1, 1, 1)).toEqual(K)
     })
 
-    it('return 0 if sigma is <= 0', () => {
+    it('return x if sigma is <= 0', () => {
       const sigma = 0
-      expect(math.getStableGivenRisky(0.5, 1, sigma, 1)).toEqual(0)
+      const x = 0.5
+      expect(math.getStableGivenRisky(x, 1, sigma, 1)).toEqual(x)
     })
   })
 

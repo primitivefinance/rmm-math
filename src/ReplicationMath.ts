@@ -35,8 +35,8 @@ export function getStableGivenRiskyApproximation(
 ): number {
   if (reserveRisky >= 1 || reserveRisky <= 0) return 0
   const K = strike
+  if (tau <= 0) return K * (1 - reserveRisky) + invariantLast
   const vol = getProportionalVol(sigma, tau)
-  if (vol <= 0) return 0
   const inverseInput: number = 1 - reserveRisky
   const phi: number = getInverseCDFSolidity(inverseInput)
   const input = phi - vol
@@ -122,8 +122,8 @@ export function getStableGivenRisky(
   invariantLast: number = 0
 ): number {
   const K = strike
+  if (tau <= 0) return K * (1 - reserveRisky) + invariantLast // y - K(1-x) = k
   const vol = getProportionalVol(sigma, tau)
-  if (vol <= 0) return 0
   const inverseInput: number = 1 - reserveRisky
   const phi: number = inverse_std_n_cdf(inverseInput)
   const input = phi - vol
