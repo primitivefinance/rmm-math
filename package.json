@@ -22,7 +22,7 @@
     "src"
   ],
   "engines": {
-    "node": ">=12"
+    "node": ">=16"
   },
   "module": "dist/src.esm.js",
   "typings": "dist/index.d.ts",
