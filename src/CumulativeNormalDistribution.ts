@@ -69,7 +69,31 @@ function solidityErf(x) {
   var y = 1.0 - ((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t * Math.exp(-x * x)
   return sign * y // erf(-x) = -erf(x);
 }
-
+/**
+ * @notice Used in solidity smart contracts
+ * source: Numerical Methods pg 265
+ * @returns standard normal cumulative distribution function of x
+ */
+export function A(x) { // needs to be fixed
+  // constants
+  var a1 = 0.254829592
+  var a2 = -0.284496736
+  var a3 = 1.421413741
+  var a4 = -1.453152027
+  var a5 = 1.061405429
+  return (Math.exp((x**2)/2))*( a1 + a2 + a3 + a4 + a5)
+}
+/**
+* 
+* source: Numerical Methods pg 265
+* 
+*/
+export function B(x) { // needs to be fixed
+  var p = 0.3275911
+  return (2 * ((1/(1-(p*(x/Math.sqrt(2)))) + (1/(1-(p*(x/Math.sqrt(2)))))**2 +
+    (1/(1-(p*(x/Math.sqrt(2)))))**3 + (1/(1-(p*(x/Math.sqrt(2)))))**4 +
+    (1/(1-(p*(x/Math.sqrt(2)))))**5)))
+}
 /**
  * @notice Used in solidity smart contracts
  * source: Numerical Methods pg 265
@@ -183,7 +207,7 @@ export function alphaSolidityIErf(x) {
 * soure: https://www.i4cy.com/pi/
 * @returns the Probability density function
 */
-export function solidityPDF(x, mean, variance) {
+export function solidityPDF(x, mean, variance) { // needs to be fixed
   var m = Math.sqrt(variance) * Math.sqrt(2 * Math.PI);
   var e = Math.exp(-Math.pow(x - mean, 2) / (2 * variance));
   return e / m;
@@ -212,10 +236,10 @@ export function InverseCDFPrimeSolidity(p) {
 * @param Ry Reserves of asset y
 * @returns Derivative of trading function with respect to Ry
 */
-export function fPrime(Strike, Tau, Sigma, Ry) {
+export function fPrime(Strike, Tau, Sigma, Rx, Ry) {
   var ICDF = getInverseCDFSolidity(1 - Ry)
   var cdfPrimeParams = ICDF - (Sigma * Math.sqrt(Tau))
   var PDF = getPDFSolidity(cdfPrimeParams)
-  var ICDFPrime = InverseCDFPrimeSolidity(1-Ry)
+  var ICDFPrime = InverseCDFPrimeSolidity(1-Rx)
   return -Strike * PDF * ICDFPrime
 }
