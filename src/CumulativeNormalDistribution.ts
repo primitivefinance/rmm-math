@@ -72,6 +72,21 @@ function solidityErf(x) {
 
 /**
  * @notice Used in solidity smart contracts
+ * source: Numerical Methods pg 265
+ * @returns standard normal cumulative distribution function of x
+ */
+function alphaSolidityErf(x){
+  var z = Math.abs(x);
+  var t = 1 / (1 + z / 2);
+  var r = t * Math.exp(-z * z - 1.26551223 + t * (1.00002368 +
+          t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 +
+          t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 +
+          t * (-0.82215223 + t * 0.17087277)))))))))
+  return x >= 0 ? r : 2 - r;
+};
+
+/**
+ * @notice Used in solidity smart contracts
  * source: https://stackoverflow.com/questions/14846767/std-normal-cdf-normal-cdf-or-error-function
  * @returns standard normal cumulative distribution function of x
  */
@@ -139,4 +154,67 @@ export function tailInverseCDFSolidity(p) {
   const quotient = numerator / denominator
   const result = c3 * r + c2_D + quotient
   return result
+}
+/**
+* Inverse Complementary error function
+* Source: https://github.com/errcw/gaussian/blob/3a4f5f179288c736baaa283f513f2fc7a7ff0be1/lib/gaussian.js#L19
+* Numberical Recipies pg 265
+* @returns Inverse error function of x
+*/
+export function alphaSolidityIErf(x) {
+  if (x >= 2) { return -100; }
+  if (x <= 0) { return 100; }
+
+  var xx = (x < 1) ? x : 2 - x;
+  var t = Math.sqrt(-2 * Math.log(xx / 2));
+
+  var r = -0.70711 * ((2.30753 + t * 0.27061) /
+          (1 + t * (0.99229 + t * 0.04481)) - t);
+
+  for (var j = 0; j < 2; j++) {
+    var err = alphaSolidityErf(r) - xx;
+    r += err / (1.12837916709551257 * Math.exp(-(r * r)) - r * err);
+  }
+
+  return (x < 1) ? r : -r;
+}
+/**
+* @notice Temporarily use hardcoded pi up to 8 digits, late upgrade to Ramanujan algorithm for calculating Pi.
+* soure: https://www.i4cy.com/pi/
+* @returns the Probability density function
+*/
+export function solidityPDF(x, mean, variance) {
+  var m = Math.sqrt(variance) * Math.sqrt(2 * Math.PI);
+  var e = Math.exp(-Math.pow(x - mean, 2) / (2 * variance));
+  return e / m;
+}
+/**
+ * @notice Used in solidity smart contracts
+ * @returns standard Probability density function function of x
+ */
+ export function getPDFSolidity(x) {
+  return solidityPDF(x, 0, 1)
+}
+/**
+*
+*
+*
+*/
+export function InverseCDFPrime(val) {
+  return val
+}
+/**
+*
+* @param Strike Strike Price
+* @param Tau Expiry
+* @param Sigma Anualized Volitity indix
+* @param Ry Reserves of asset y
+* @returns Derivative of trading function with respect to Ry
+*/
+export function fPrime(Strike, Tau, Sigma, Ry) {
+  var ICDF = getInverseCDFSolidity(1 - Ry)
+  var cdfPrimeParams = ICDF - (Sigma * Math.sqrt(Tau))
+  var cdfPrime = PDF(cdfPrimeParams)
+  var ICDFPrime = InverseCDFPrime(1-Ry)
+  return -Strike * cdfPrime * ICDFPrime
 }
