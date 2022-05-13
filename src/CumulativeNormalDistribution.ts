@@ -196,15 +196,16 @@ export function solidityPDF(x, mean, variance) {
   return solidityPDF(x, 0, 1)
 }
 /**
-*
-*
-*
-*/
-export function InverseCDFPrime(val) {
-  return val
+ * @notice  Returns the derivative of the inverse CDF.
+ * Source: https://math.stackexchange.com/questions/910355/derivative-of-the-inverse-cumulative-distribution-function-for-the-standard-norm
+ * @dev Used in solidity smart contracts
+ * @returns standard normal derivative of invervse cumulative distribution function of x
+ */
+export function InverseCDFPrimeSolidity(p) {
+  var denomenator = getPDFSolidity(getInverseCDFSolidity(p))
+  return 1 / denomenator
 }
 /**
-*
 * @param Strike Strike Price
 * @param Tau Expiry
 * @param Sigma Anualized Volitity indix
@@ -214,7 +215,7 @@ export function InverseCDFPrime(val) {
 export function fPrime(Strike, Tau, Sigma, Ry) {
   var ICDF = getInverseCDFSolidity(1 - Ry)
   var cdfPrimeParams = ICDF - (Sigma * Math.sqrt(Tau))
-  var cdfPrime = PDF(cdfPrimeParams)
-  var ICDFPrime = InverseCDFPrime(1-Ry)
-  return -Strike * cdfPrime * ICDFPrime
+  var PDF = getPDFSolidity(cdfPrimeParams)
+  var ICDFPrime = InverseCDFPrimeSolidity(1-Ry)
+  return -Strike * PDF * ICDFPrime
 }
