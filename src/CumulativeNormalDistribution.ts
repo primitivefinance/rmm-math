@@ -70,11 +70,11 @@ function solidityErf(x) {
   return sign * y // erf(-x) = -erf(x);
 }
 /**
- * @notice Used in solidity smart contracts
- * source: Numerical Methods pg 265
- * @returns standard normal cumulative distribution function of x
+ * 
+ * 
+ * 
  */
-export function A(x) { // needs to be fixed
+export function A(x) { 
   // constants
   var a1 = 0.254829592
   var a2 = -0.284496736
@@ -84,8 +84,33 @@ export function A(x) { // needs to be fixed
   return (Math.exp((x**2)/2))*( a1 + a2 + a3 + a4 + a5)
 }
 /**
+ * apply the chain rule to (Math.exp((x**2)/2)) = x*(Math.exp((x**2)/2))
+ * 
+ * 
+ */
+ export function APrime(x) { 
+  // constants
+  var a1 = 0.254829592
+  var a2 = -0.284496736
+  var a3 = 1.421413741
+  var a4 = -1.453152027
+  var a5 = 1.061405429
+  return x*(Math.exp((x**2)/2))*( a1 + a2 + a3 + a4 + a5)
+}
+/**
 * 
-* source: Numerical Methods pg 265
+* 
+* 
+*/
+export function BPrime(x) { // needs to be fixed
+  var p = 0.3275911
+  return (2 * ((1/(1-(p*(x/Math.sqrt(2)))) + (1/(1-(p*(x/Math.sqrt(2)))))**2 +
+    (1/(1-(p*(x/Math.sqrt(2)))))**3 + (1/(1-(p*(x/Math.sqrt(2)))))**4 +
+    (1/(1-(p*(x/Math.sqrt(2)))))**5)))
+}
+/**
+* 
+* 
 * 
 */
 export function B(x) { // needs to be fixed
