@@ -25,7 +25,7 @@ export function std_n_pdf(x) {
  */
 export function inverse_std_n_cdf(x) {
   if (x >= 1) return Infinity
-  if (x <= 0) return -Infinity
+  if (x <= 0) return - Infinity
   return gaussian(0, 1).ppf(x)
 }
 
@@ -70,9 +70,7 @@ function solidityErf(x) {
   return sign * y // erf(-x) = -erf(x);
 }
 /**
- * 
- * 
- * 
+ * @returns the polynomial A(x) where g(x) = A(x)/B(x), and g(x) is our aproximated CDF
  */
 export function A(x) { 
   // constants
@@ -85,8 +83,7 @@ export function A(x) {
 }
 /**
  * apply the chain rule to (Math.exp((x**2)/2)) = x*(Math.exp((x**2)/2))
- * 
- * 
+ * @returns the derivative of A(x) to be used in calculating the derivative of our CDF aprox
  */
  export function APrime(x) { 
   // constants
@@ -98,26 +95,27 @@ export function A(x) {
   return x*(Math.exp((x**2)/2))*( a1 + a2 + a3 + a4 + a5)
 }
 /**
-* 
-* 
-* 
+* @returns the polynomial B(x) where g(x) = A(x)/B(x), and g(x) is our aproximated CDF
 */
-export function BPrime(x) { // needs to be fixed
+export function B(x) {
   var p = 0.3275911
-  return (2 * ((1/(1-(p*(x/Math.sqrt(2)))) + (1/(1-(p*(x/Math.sqrt(2)))))**2 +
+  return (2 * (1/(1-(p*(x/Math.sqrt(2)))) + (1/(1-(p*(x/Math.sqrt(2)))))**2 +
     (1/(1-(p*(x/Math.sqrt(2)))))**3 + (1/(1-(p*(x/Math.sqrt(2)))))**4 +
-    (1/(1-(p*(x/Math.sqrt(2)))))**5)))
+    (1/(1-(p*(x/Math.sqrt(2)))))**5))
 }
 /**
-* 
-* 
-* 
-*/
-export function B(x) { // needs to be fixed
+* @returns the derivative of B(x) to be used in calculating the derivative of our CDF aprox
+* TODO: Simplify
+*/ 
+export function BPrime(x) {
   var p = 0.3275911
-  return (2 * ((1/(1-(p*(x/Math.sqrt(2)))) + (1/(1-(p*(x/Math.sqrt(2)))))**2 +
-    (1/(1-(p*(x/Math.sqrt(2)))))**3 + (1/(1-(p*(x/Math.sqrt(2)))))**4 +
-    (1/(1-(p*(x/Math.sqrt(2)))))**5)))
+  var poverroot2 = p / Math.sqrt(2)
+  var t1 = poverroot2 / (1- (poverroot2 * x))**2
+  var t2 = (2 * poverroot2) / (1 - (poverroot2 * x))**3
+  var t3 = (3 * poverroot2) / (1 - (poverroot2 * x))**4
+  var t4 = (4 * poverroot2) / (1 - (poverroot2 * x))**5
+  var t5 = (4 * poverroot2) / (1 - (poverroot2 * x))**6
+  return t1 + t2 + t3 + t4 + t5
 }
 /**
  * @notice Used in solidity smart contracts
@@ -180,8 +178,7 @@ export function centralInverseCDFSolidity(p) {
   const numerator = a1 * r + a0
   const denominator = Math.pow(r, 2) + b1 * r + b0
   const input = a2 + numerator / denominator
-  const result = q * input
-  return result
+  return q * input
 }
 
 /**
@@ -201,8 +198,7 @@ export function tailInverseCDFSolidity(p) {
   const numerator = c1_D * r + c0_D
   const denominator = Math.pow(r, 2) + D1 * r + D0
   const quotient = numerator / denominator
-  const result = c3 * r + c2_D + quotient
-  return result
+  return c3 * r + c2_D + quotient
 }
 /**
 * Inverse Complementary error function
@@ -263,8 +259,8 @@ export function InverseCDFPrimeSolidity(p) {
 */
 export function fPrime(Strike, Tau, Sigma, Rx, Ry) {
   var ICDF = getInverseCDFSolidity(1 - Ry)
-  var cdfPrimeParams = ICDF - (Sigma * Math.sqrt(Tau))
+  var cdfPrimeParams = ICDF - Sigma * Math.sqrt(Tau)
   var PDF = getPDFSolidity(cdfPrimeParams)
-  var ICDFPrime = InverseCDFPrimeSolidity(1-Rx)
+  var ICDFPrime = InverseCDFPrimeSolidity(1 - Rx)
   return -Strike * PDF * ICDFPrime
 }
