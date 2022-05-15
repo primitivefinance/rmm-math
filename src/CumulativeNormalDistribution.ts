@@ -25,7 +25,7 @@ export function std_n_pdf(x) {
  */
 export function inverse_std_n_cdf(x) {
   if (x >= 1) return Infinity
-  if (x <= 0) return - Infinity
+  if (x <= 0) return -Infinity
   return gaussian(0, 1).ppf(x)
 }
 
@@ -72,49 +72,55 @@ function solidityErf(x) {
 /**
  * @returns the polynomial A(x) where g(x) = A(x)/B(x), and g(x) is our aproximated CDF
  */
-export function A(x) { 
+export function A(x) {
   // constants
   var a1 = 0.254829592
   var a2 = -0.284496736
   var a3 = 1.421413741
   var a4 = -1.453152027
   var a5 = 1.061405429
-  return (Math.exp((x**2)/2))*( a1 + a2 + a3 + a4 + a5)
+  return Math.exp(x ** 2 / 2) * (a1 + a2 + a3 + a4 + a5)
 }
 /**
  * apply the chain rule to (Math.exp((x**2)/2)) = x*(Math.exp((x**2)/2))
  * @returns the derivative of A(x) to be used in calculating the derivative of our CDF aprox
  */
- export function APrime(x) { 
+export function APrime(x) {
   // constants
   var a1 = 0.254829592
   var a2 = -0.284496736
   var a3 = 1.421413741
   var a4 = -1.453152027
   var a5 = 1.061405429
-  return x*(Math.exp((x**2)/2))*( a1 + a2 + a3 + a4 + a5)
+  return x * Math.exp(x ** 2 / 2) * (a1 + a2 + a3 + a4 + a5)
 }
 /**
-* @returns the polynomial B(x) where g(x) = A(x)/B(x), and g(x) is our aproximated CDF
-*/
+ * @returns the polynomial B(x) where g(x) = A(x)/B(x), and g(x) is our aproximated CDF
+ */
 export function B(x) {
   var p = 0.3275911
-  return (2 * (1/(1-(p*(x/Math.sqrt(2)))) + (1/(1-(p*(x/Math.sqrt(2)))))**2 +
-    (1/(1-(p*(x/Math.sqrt(2)))))**3 + (1/(1-(p*(x/Math.sqrt(2)))))**4 +
-    (1/(1-(p*(x/Math.sqrt(2)))))**5))
+  return (
+    2 *
+    (1 / (1 - p * (x / Math.sqrt(2))) +
+      (1 / (1 - p * (x / Math.sqrt(2)))) ** 2 +
+      (1 / (1 - p * (x / Math.sqrt(2)))) ** 3 +
+      (1 / (1 - p * (x / Math.sqrt(2)))) ** 4 +
+      (1 / (1 - p * (x / Math.sqrt(2)))) ** 5)
+  )
 }
 /**
-* @returns the derivative of B(x) to be used in calculating the derivative of our CDF aprox
-* TODO: Simplify
-*/ 
+ * @returns the derivative of B(x) to be used in calculating the derivative of our CDF aprox
+ * TODO: Simplify
+ */
+
 export function BPrime(x) {
   var p = 0.3275911
   var poverroot2 = p / Math.sqrt(2)
-  var t1 = poverroot2 / (1- (poverroot2 * x))**2
-  var t2 = (2 * poverroot2) / (1 - (poverroot2 * x))**3
-  var t3 = (3 * poverroot2) / (1 - (poverroot2 * x))**4
-  var t4 = (4 * poverroot2) / (1 - (poverroot2 * x))**5
-  var t5 = (4 * poverroot2) / (1 - (poverroot2 * x))**6
+  var t1 = poverroot2 / (1 - poverroot2 * x) ** 2
+  var t2 = (2 * poverroot2) / (1 - poverroot2 * x) ** 3
+  var t3 = (3 * poverroot2) / (1 - poverroot2 * x) ** 4
+  var t4 = (4 * poverroot2) / (1 - poverroot2 * x) ** 5
+  var t5 = (4 * poverroot2) / (1 - poverroot2 * x) ** 6
   return t1 + t2 + t3 + t4 + t5
 }
 /**
@@ -122,15 +128,26 @@ export function BPrime(x) {
  * source: Numerical Methods pg 265
  * @returns standard normal cumulative distribution function of x
  */
-function alphaSolidityErf(x){
-  var z = Math.abs(x);
-  var t = 1 / (1 + z / 2);
-  var r = t * Math.exp(-z * z - 1.26551223 + t * (1.00002368 +
-          t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 +
-          t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 +
-          t * (-0.82215223 + t * 0.17087277)))))))))
-  return x >= 0 ? r : 2 - r;
-};
+function alphaSolidityErf(x) {
+  var z = Math.abs(x)
+  var t = 1 / (1 + z / 2)
+  var r =
+    t *
+    Math.exp(
+      -z * z -
+        1.26551223 +
+        t *
+          (1.00002368 +
+            t *
+              (0.37409196 +
+                t *
+                  (0.09678418 +
+                    t *
+                      (-0.18628806 +
+                        t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 + t * (-0.82215223 + t * 0.17087277))))))))
+    )
+  return x >= 0 ? r : 2 - r
+}
 
 /**
  * @notice Used in solidity smart contracts
@@ -201,42 +218,46 @@ export function tailInverseCDFSolidity(p) {
   return c3 * r + c2_D + quotient
 }
 /**
-* Inverse Complementary error function
-* Source: https://github.com/errcw/gaussian/blob/3a4f5f179288c736baaa283f513f2fc7a7ff0be1/lib/gaussian.js#L19
-* Numberical Recipies pg 265
-* @returns Inverse error function of x
-*/
+ * Inverse Complementary error function
+ * Source: https://github.com/errcw/gaussian/blob/3a4f5f179288c736baaa283f513f2fc7a7ff0be1/lib/gaussian.js#L19
+ * Numberical Recipies pg 265
+ * @returns Inverse error function of x
+ */
 export function alphaSolidityIErf(x) {
-  if (x >= 2) { return -100; }
-  if (x <= 0) { return 100; }
-
-  var xx = (x < 1) ? x : 2 - x;
-  var t = Math.sqrt(-2 * Math.log(xx / 2));
-
-  var r = -0.70711 * ((2.30753 + t * 0.27061) /
-          (1 + t * (0.99229 + t * 0.04481)) - t);
-
-  for (var j = 0; j < 2; j++) {
-    var err = alphaSolidityErf(r) - xx;
-    r += err / (1.12837916709551257 * Math.exp(-(r * r)) - r * err);
+  if (x >= 2) {
+    return -100
+  }
+  if (x <= 0) {
+    return 100
   }
 
-  return (x < 1) ? r : -r;
+  var xx = x < 1 ? x : 2 - x
+  var t = Math.sqrt(-2 * Math.log(xx / 2))
+
+  var r = -0.70711 * ((2.30753 + t * 0.27061) / (1 + t * (0.99229 + t * 0.04481)) - t)
+
+  for (var j = 0; j < 2; j++) {
+    var err = alphaSolidityErf(r) - xx
+    r += err / (1.12837916709551257 * Math.exp(-(r * r)) - r * err)
+  }
+
+  return x < 1 ? r : -r
 }
 /**
-* @notice Temporarily use hardcoded pi up to 8 digits, late upgrade to Ramanujan algorithm for calculating Pi.
-* soure: https://www.i4cy.com/pi/
-* @returns the Probability density function
-*/
-export function solidityPDF(x, mean, variance) { // needs to be fixed
-  var m = Math.sqrt(variance) * Math.sqrt(2 * Math.PI);
-  var e = Math.exp(-Math.pow(x - mean, 2) / (2 * variance));
-  return e / m;
+ * @notice Temporarily use hardcoded pi up to 8 digits, late upgrade to Ramanujan algorithm for calculating Pi.
+ * soure: https://www.i4cy.com/pi/
+ * @returns the Probability density function
+ */
+export function solidityPDF(x, mean, variance) {
+  // needs to be fixed
+  var m = Math.sqrt(variance) * Math.sqrt(2 * Math.PI)
+  var e = Math.exp(-Math.pow(x - mean, 2) / (2 * variance))
+  return e / m
 }
 /**
  * @returns standard Probability density function function of x
  */
- export function getPDFSolidity(x) {
+export function getPDFSolidity(x) {
   return solidityPDF(x, 0, 1)
 }
 /**
@@ -253,17 +274,17 @@ export function InverseCDFPrimeSolidity(p) {
  * Source: https://math.stackexchange.com/questions/910355/derivative-of-the-inverse-cumulative-distribution-function-for-the-standard-norm
  * @returns standard normal derivative of invervse cumulative distribution function of x
  */
- export function CDFPrimeAprox(x) {
+export function CDFPrimeAprox(x) {
   var numeratore = APrime(x) * B(x) - BPrime(x) * A(x)
-  return numeratore / (B(x)**2)
+  return numeratore / B(x) ** 2
 }
 /**
-* @param Strike Strike Price
-* @param Tau Expiry
-* @param Sigma Anualized Volitity indix
-* @param Ry Reserves of asset y
-* @returns Derivative of trading function with respect to Ry
-*/
+ * @param Strike Strike Price
+ * @param Tau Expiry
+ * @param Sigma Anualized Volitity indix
+ * @param Ry Reserves of asset y
+ * @returns Derivative of trading function with respect to Ry
+ */
 export function fPrime(Strike, Tau, Sigma, Rx, Ry) {
   var ICDF = getInverseCDFSolidity(1 - Ry)
   var cdfPrimeParams = ICDF - Sigma * Math.sqrt(Tau)
