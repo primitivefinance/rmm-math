@@ -51,7 +51,7 @@ function solidityCDF(x, mean, variance) {
  * source: https://stackoverflow.com/questions/14846767/std-normal-cdf-normal-cdf-or-error-function
  * @returns error function of x
  */
-function solidityErf(x) {
+export function solidityErf(x) {
   // save the sign of x
   var sign = x >= 0 ? 1 : -1
   x = Math.abs(x)
@@ -128,7 +128,7 @@ export function BPrime(x) {
  * source: Numerical Methods pg 265
  * @returns standard normal cumulative distribution function of x
  */
-function alphaSolidityErf(x) {
+export function alphaSolidityErf(x) {
   var z = Math.abs(x)
   var t = 1 / (1 + z / 2)
   var r =

@@ -79,8 +79,15 @@ describe('Stats Math Library', () => {
     })
   })
 
-  describe('approximations', function() {
-    it('returns a ', async function() {})
+  describe.skip('approximations', function() {
+    it('expanded polynomials are equal to the approximations', async function() {
+      const x = 0.5
+      const gx = math.A(x) / math.B(x)
+      const actual = math.getCDFSolidity(x)
+      const real = math.std_n_cdf(x)
+      console.log({ gx, actual, real })
+      expect(gx).toEqual(actual)
+    })
   })
 })
 
