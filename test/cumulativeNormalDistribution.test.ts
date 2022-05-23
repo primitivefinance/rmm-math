@@ -78,6 +78,10 @@ describe('Stats Math Library', () => {
       expect(math.getInverseCDFSolidity(0.01)).toBeCloseTo(-2.32634787404084110089, maxError.tailInverseCDF)
     })
   })
+
+  describe('approximations', function() {
+    it('returns a ', async function() {})
+  })
 })
 
 export const maxError = {
