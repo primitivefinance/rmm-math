@@ -1,4 +1,5 @@
 export * from './BlackScholes'
 export * from './CumulativeNormalDistribution'
+export * from './Newton'
 export * from './ReplicationMath'
 export * from './utils'
