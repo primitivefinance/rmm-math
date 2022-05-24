@@ -79,14 +79,52 @@ describe('Stats Math Library', () => {
     })
   })
 
-  describe.skip('approximations', function() {
-    it('expanded polynomials are equal to the approximations', async function() {
+  describe.only('approximations', function() {
+    it.skip('expanded polynomials are equal to the approximations', async function() {
       const x = 0.5
       const gx = math.A(x) / math.B(x)
       const actual = math.getCDFSolidity(x)
       const real = math.std_n_cdf(x)
       console.log({ gx, actual, real })
       expect(gx).toEqual(actual)
+    })
+
+    it('A(x) / B(x)', async function() {
+      const value = 0.5
+      const x = value /// Math.sqrt(2)
+      const ax = math.A2(x)
+      const bx = math.B2(x)
+      const ax0 = math.A(value)
+      const bx0 = math.B(value)
+      const cdf = math.std_n_cdf(value)
+      const cdf0 = math.getCDFSolidity(value)
+      const ex = 1 - ax / bx
+      const ex0 = 1 - ax0 / bx0
+      const erf = math.solidityErf(x)
+      const gx = 0.5 * (1 + ex)
+      const gx0 = 1 - ax0 / bx0 / 2
+      const c = 1 - math.C(x)
+      const derf = math.derf0(x / Math.sqrt(2))
+      const pdf = math.std_n_pdf(x)
+      console.log({ cdf, pdf, cdf0, derf })
+      console.log({ c })
+      console.log({ ex, ex0, erf })
+      console.log({ ax, bx, ax0, bx0, gx, gx0, cdf, cdf0, mx: ax0 / bx0 })
+    })
+    it('WORKS, ex ~ erf', async function() {
+      const val = 0.5
+      const x = val / Math.sqrt(2)
+      const a = math.A3(x)
+      const b = math.B3(x)
+      const exc = a / b
+      const ex = 1 - exc
+      const erf = math.solidityErf(x)
+      const c = 0.5 * (1 + ex)
+      const p = math.pdf(val)
+      const pdf = math.std_n_pdf(val)
+      const primes = math.Primes(val)
+      console.log({ primes, a, b, ap: math.A3Prime(x), bp: math.B3Prime(x) })
+      console.log({ exc, ex, erf, p, pdf, c })
     })
   })
 })

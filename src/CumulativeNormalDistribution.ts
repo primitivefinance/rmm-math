@@ -108,6 +108,102 @@ export function B(x) {
       (1 / (1 - p * (x / Math.sqrt(2)))) ** 5)
   )
 }
+
+export function A2(x: number) {
+  const terms = 5
+  let y = 0
+  let i = 1
+
+  var a1 = 0.254829592
+  var a2 = -0.284496736
+  var a3 = 1.421413741
+  var a4 = -1.453152027
+  var a5 = 1.061405429
+  const A = [a1, a2, a3, a4, a5]
+
+  while (i <= terms) {
+    y += A[i - 1] * Math.exp(Math.pow(-x, 2))
+    i++
+  }
+
+  return y
+}
+
+export function C(x: number) {
+  const terms = 5
+  let y = 0
+  let i = 1
+  var p = 0.3275911
+  var a1 = 0.254829592
+  var a2 = -0.284496736
+  var a3 = 1.421413741
+  var a4 = -1.453152027
+  var a5 = 1.061405429
+  const A = [a1, a2, a3, a4, a5]
+
+  while (i <= terms) {
+    const t = Math.pow(1 / (1 + p * x), i)
+    y += A[i - 1] * t * Math.exp(-x * x)
+    i++
+  }
+
+  return y
+}
+
+export function dxerf(x: number) {
+  const p = 0.3275911
+  const e = Math.exp(-x * x)
+  const a = -0.4999999995 * (-2 * e * x * (p * x + 1) - p * e)
+  const b = (p * x + 1) ** 2
+  return a / b
+}
+
+export function derf(x: number) {
+  const p = 0.3275911
+  const e = Math.exp(-x * x)
+  const a =
+    0.5 *
+    e *
+    (0.00192 * x ** 6 +
+      0.02279 * x ** 5 +
+      0.20006 * x ** 4 +
+      0.7891 * x ** 3 +
+      1.81797 * x ** 2 +
+      2.21765 * x +
+      1.12838)
+  const b = (p * x + 1) ** 6
+  return a / b
+}
+
+export function derf0(x: number) {
+  const p = 0.3275911
+  const e = Math.exp(-x * x)
+  const b = (p * x + 1) ** 2
+
+  return (-0.127414796 * (-2 * e * x * (p * x + 1) - p * x)) / b
+}
+
+/**
+ * Denominator polynomial used in the approximated cdf.
+ *
+ * B(x) = \sum{ ( \frac{1}{1 + px} )^i }
+ * B(x) = Sum( ( 1 / 1 + px)^i )
+ *
+ * @param x Value passed to the erf function.
+ */
+export function B2(x: number) {
+  const terms = 5
+  const p = 0.3275911
+  let y = 0
+  let i = 1
+  while (i <= terms) {
+    y += Math.pow(1 / 1 + p * x, i)
+    i++
+  }
+
+  return y
+}
+
 /**
  * @returns the derivative of B(x) to be used in calculating the derivative of our CDF aprox
  * TODO: Simplify
@@ -291,4 +387,133 @@ export function fPrime(Strike, Tau, Sigma, Rx, Ry) {
   var PDF = CDFPrimeAprox(cdfPrimeParams)
   var ICDFPrime = InverseCDFPrimeSolidity(1 - Rx)
   return -Strike * PDF * ICDFPrime
+}
+
+/**
+ * WORKS BUT I DONT KNOW WHY
+ *
+ * @param x
+ * @returns
+ */
+export function A3(x: number) {
+  var a1 = 0.254829592
+  var a2 = -0.284496736
+  var a3 = 1.421413741
+  var a4 = -1.453152027
+  var a5 = 1.061405429
+
+  const A = [a1, a2, a3, a4, a5]
+
+  let y = 0
+  let i = 1
+  let runs = 5
+  while (i <= runs) {
+    const a = A[i - 1]
+    y += a * Math.exp(-x * x) // ai * e^(-1 * x^2)
+    i++
+  }
+  y
+
+  return 0.00293479851 * x ** 4 + 0.0258331982 * x ** 3 + 0.22503089 * x ** 2 + 0.50956914 * x + 0.9999999999
+}
+
+export function A3Prime(x: number) {
+  //return 0.00293 * 4 * x ** 3 + 0.02583 * 3 * x ** 2 + 0.22503 * 2 * x ** 1 + 0.50956
+  //return 0.01172 * x ** 3 + 0.07749 * x ** 2 + 0.45006 * x + 0.50956
+  return 0.509569 + 0.450062 * x + 0.0774996 * x ** 2 + 0.0117392 * x ** 3
+}
+
+export function A4Prime(x: number) {
+  return -0.777889 * x ** 4 - 4.19625 * x ** 3 - 116.232 * x ** 2 - 176.11 * x - 912.988
+}
+
+export function Primes(x: number) {
+  const i =
+    (Math.exp(-(x ** 2)) *
+      (-1.55578 * x ** 6 -
+        18.4437 * x ** 5 -
+        161.874 * x ** 4 -
+        638.476 * x ** 3 -
+        1470.94 * x ** 2 -
+        1794.33 * x -
+        912.988)) /
+    (x + 3.05259) ** 6
+
+  const a =
+    -1.55578 * x ** 6 -
+    18.4437 * x ** 5 -
+    161.874 * x ** 4 -
+    638.476 * x ** 3 -
+    1470.94 * x ** 2 -
+    1794.33 * x -
+    912.988
+
+  const b = (x + 3.05259) ** 6 * Math.exp(-(x ** 2))
+  a
+  b
+
+  return i
+}
+
+/**
+ * WORKS!
+ *
+ *
+ * @param x
+ * @returns
+ */
+export function B3(x: number) {
+  var p = 0.3275911
+  let i = 1
+  let runs = 5
+
+  let y = 0
+  y
+
+  for (; i <= runs; i++) {
+    y += (1 + p * x) ** i
+  }
+
+  return (p * x + 1) ** runs * Math.exp(x ** 2)
+}
+
+export function B3Prime(x: number) {
+  var p = 0.3275911
+  return Math.exp(x ** 2) * (p * x + 1) ** 4 * (2 * p * x ** 2 + 2 * x + p * 5)
+}
+
+export function A4(x: number) {
+  const p = 0.3275911
+
+  var a1 = 0.254829592
+  var a2 = -0.284496736
+  var a3 = 1.421413741
+  var a4 = -1.453152027
+  var a5 = 1.061405429
+
+  const A = [a1, a2, a3, a4, a5]
+  let y = 0
+  for (let i = 1; i <= 5; i++) {
+    const a = A[i - 1]
+    const b = (1 + p * x) ** i
+    y += a / b
+  }
+  return y
+}
+
+export function A5(x: number) {
+  return (
+    0.25483 / (0.327591 * x + 1) -
+    0.284497 / (0.327591 * x + 1) ** 2 +
+    1.42141 / (0.327591 * x + 1) ** 3 -
+    1.45315 / (0.327591 * x + 1) ** 4 +
+    1.06141 / (0.327591 * x + 1) ** 5
+  )
+}
+
+export function pdf(x: number) {
+  //const cdf = 0.5 * (1 + (1 - A3(x) / B3(x)))
+  const num = 0.5 * A3(x) * B3Prime(x) - 0.5 * B3(x) * A3Prime(x)
+  const den = B3(x) ** 2
+  return num / den
 }
