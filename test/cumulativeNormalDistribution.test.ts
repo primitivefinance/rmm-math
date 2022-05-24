@@ -79,8 +79,8 @@ describe('Stats Math Library', () => {
     })
   })
 
-  describe.only('approximations', function() {
-    it.skip('expanded polynomials are equal to the approximations', async function() {
+  describe('approximations', function() {
+    it('expanded polynomials are equal to the approximations', async function() {
       const x = 0.5
       const gx = math.A(x) / math.B(x)
       const actual = math.getCDFSolidity(x)
@@ -125,6 +125,16 @@ describe('Stats Math Library', () => {
       const primes = math.Primes(val)
       console.log({ primes, a, b, ap: math.A3Prime(x), bp: math.B3Prime(x) })
       console.log({ exc, ex, erf, p, pdf, c })
+    })
+    it.only('cdf and pdf', async function() {
+      const val = 0.5
+      const CX = math.cdf(val)
+      const cdf = math.std_n_cdf(val)
+      const PX = math.pdf(val)
+      const pdf = math.std_n_pdf(val)
+      const EX = math.erfPrime(val)
+      const erfprime = math.erfPrimeActual(val)
+      console.log({ CX, cdf, diff0: CX - cdf, PX, pdf, diff1: PX - pdf, EX, erfprime })
     })
   })
 })

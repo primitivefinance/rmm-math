@@ -474,12 +474,27 @@ export function B3(x: number) {
     y += (1 + p * x) ** i
   }
 
-  return (p * x + 1) ** runs * Math.exp(x ** 2)
+  // (px + 1)^5 * e^(x^2)
+  return Math.pow(p * x + 1, 5) * Math.exp(x ** 2)
 }
 
 export function B3Prime(x: number) {
+  // d/dx((0.3275911 x + 1)^5 exp(x^2)) = e^(x^2) (0.327591 x + 1)^4 (0.655182 x^2 + 2 x + 1.63796)
+  // 2 e^(x^2) (0.327591 x + 1)^4 (0.327591 x^2 + x + 0.818978)
   var p = 0.3275911
-  return Math.exp(x ** 2) * (p * x + 1) ** 4 * (2 * p * x ** 2 + 2 * x + p * 5)
+  const constant = 2
+  const exp = Math.exp(Math.pow(x, 2))
+  const molonomial = Math.pow(p * x + 1, 4)
+  const quadratic = p * Math.pow(x, 2) + x + 0.818978
+  const product = constant * exp * molonomial * quadratic
+  return product
+  //const part0 = Math.exp(Math.pow(x, 2))
+  //const part1 = Math.pow(p * x + 1, 4)
+  //const part2 = p * 2 * Math.pow(x, 2)
+  //const part3 = 2 * x
+  //const part4 = p * 5
+  //return part0 * part1 * (part2 * part3 * part4)
+  //return Math.exp(x ** 2) * (p * x + 1) ** 4 * (2 * p * x ** 2 + 2 * x + p * 5)
 }
 
 export function A4(x: number) {
@@ -511,9 +526,43 @@ export function A5(x: number) {
   )
 }
 
+export function cdf(x: number) {
+  const z = x / Math.sqrt(2)
+  const sign = z >= 0 ? 1 : -1
+  const erf = sign * (1 - A3(z) / B3(z))
+  return 0.5 * (1 + erf)
+}
+
 export function pdf(x: number) {
   //const cdf = 0.5 * (1 + (1 - A3(x) / B3(x)))
-  const num = 0.5 * A3(x) * B3Prime(x) - 0.5 * B3(x) * A3Prime(x)
-  const den = B3(x) ** 2
-  return num / den
+  const z = x / Math.sqrt(2)
+  //const num = 0.5 * A3(z) * B3Prime(z) - 0.5 * B3(z) * A3Prime(z)
+  //const den = Math.pow(B3(z), 2)
+  //return num / den
+
+  //const num = -0.5 * (B3(z) * A3Prime(z) - A3(z) * B3Prime(z))
+  //const denom = Math.pow(B3(z), 2)
+  //return num / denom
+
+  //const num = A3(z) * B3Prime(z) - B3(z) * A3Prime(z)
+  //const denom = Math.pow(B3(z), 2) * 2
+  //return num / denom
+
+  const num = A3(z) * B3Prime(z) - B3(z) * A3Prime(z)
+  const denom = Math.pow(B3(z), 2)
+  return 0.5 * (num / denom)
+}
+
+export function erfPrimeActual(x: number) {
+  const z = x / Math.sqrt(2)
+  const constant = 2 / Math.sqrt(Math.PI)
+  const exp = Math.exp(-z * z)
+  return constant * exp
+}
+
+export function erfPrime(x: number) {
+  const z = x / Math.sqrt(2)
+  const num = A3(z) * B3Prime(z) - B3(z) * A3Prime(z)
+  const denom = Math.pow(B3(z), 2)
+  return num / denom
 }
